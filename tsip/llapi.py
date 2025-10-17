@@ -18,7 +18,7 @@ def is_framed(packet):
 
     """
 
-    return packet[0] == CHR_DLE and packet[-2] == CHR_DLE and packet[-1] == CHR_ETX
+    return packet[0] == chr(DLE) and packet[-2] == chr(DLE) and packet[-1] == chr(ETX)
 
 
 def frame(data):
@@ -51,7 +51,7 @@ def unframe(packet):
     """
 
     if is_framed(packet):
-        return packet.lstrip(CHR_DLE).rstrip(CHR_ETX).rstrip(CHR_DLE)
+        return packet.lstrip(chr(DLE)).rstrip(chr(ETX)).rstrip(chr(DLE))
     else:
         raise ValueError('packet does not contain leading DLE and trailing DLE/ETX')
 
@@ -87,7 +87,7 @@ def unstuff(packet):
     if is_framed(packet):
         raise ValueError('packet contains leading DLE and trailing DLE/ETX')
     else:
-        return packet.replace(CHR_DLE + CHR_DLE, CHR_DLE)
+        return packet.replace(chr(DLE) + chr(DLE), chr(DLE))
 
 
 class gps(object):

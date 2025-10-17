@@ -48,7 +48,7 @@ MAX_CHANNELS = 12
 
 def tobytes(s):
     try:
-        return bytes(s.encode())
+        return bytes(s.encode('latin-1'))
     except AttributeError:
         return s
     except UnicodeDecodeError:
@@ -174,26 +174,26 @@ class Struct0x58(object):
         raise NotImplementedError
 
     def unpack(self, s):
-        fields = list(struct.unpack('>BBBBB', s[:5]))
+        fields = list(struct.unpack('>BBBBB', tobytes(s[:5])))
 
         type_of_data = fields[2]
         s = s[5:]
 
         if type_of_data == 2:
             # Almanac
-            fields += list(struct.unpack('>BBfffffffffffffffHH', s))
+            fields += list(struct.unpack('>BBfffffffffffffffHH', tobytes(s)))
         elif type_of_data == 3:
             # Health page
-            fields += list(struct.unpack('>BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBh', s))
+            fields += list(struct.unpack('>BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBh', tobytes(s)))
         elif type_of_data == 4:
             # Ionospheric
-            fields += list(struct.unpack('>ffffffff', s[8:]))
+            fields += list(struct.unpack('>ffffffff', tobytes(s[8:])))
         elif type_of_data == 5:
             # UTC
-            fields += list(struct.unpack('>dfhfHHHh', s[13:]))
+            fields += list(struct.unpack('>dfhfHHHh', tobytes(s[13:])))
         elif type_of_data == 6:
             # Ephemeris
-            fields += list(struct.unpack('>BfhBBBBhffffffBBffdfdfdffdfdfdffddddd', s))
+            fields += list(struct.unpack('>BfhBBBBhffffffBBffdfdfdffdfdfdffddddd', tobytes(s)))
 
         return fields
         

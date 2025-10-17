@@ -11,8 +11,8 @@ ETX = 0x03
 
 # DLE and ETX as characters
 #
-CHR_DLE = chr(DLE)
-CHR_ETX = chr(ETX)
+CHR_DLE = DLE.to_bytes()
+CHR_ETX = ETX.to_bytes()
 
 
 # Contants for setting bits
