@@ -4,6 +4,7 @@ from tsip.config import *
 from tsip.structs import *
 from tsip.llapi import *
 from tsip.hlapi import *
+from tsip.pack2dict import *
 
 NAME = 'tsip'
 VERSION = '0.3.2'

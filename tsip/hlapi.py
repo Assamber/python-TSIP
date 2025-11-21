@@ -150,7 +150,7 @@ class Packet(object):
             try:
                 return cls(*struct_.unpack(rawpacket))
             except struct.error:
-                raise
+                #raise
                 # Try next one.
                 pass
 

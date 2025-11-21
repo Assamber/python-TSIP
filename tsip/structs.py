@@ -154,13 +154,13 @@ class Struct0x47(object):
         raise NotImplemented
 
     def unpack(self, s):
-        count = struct.unpack('>B', s[1])[0]
+        count = struct.unpack('>B', tobytes(s[1]))[0]
         fields = [0x47, count]
 
         for i in range(0, count):
             i1 = 2 + i * 5
             i2 = 2 + i * 5 + 5
-            (satnum, siglevel) = struct.unpack('>Bf', s[i1:i2])
+            (satnum, siglevel) = struct.unpack('>Bf', tobytes(s[i1:i2]))
             fields.append(satnum)
             fields.append(siglevel)
 
@@ -197,6 +197,32 @@ class Struct0x58(object):
 
         return fields
         
+class Struct0x6c(object):
+    """Report Packet 0x6C: Sattelite Selection List
+    
+       This packet is of variable length equal to 17+nsvs where "nsvs" is
+       the number of satellites used in the solution.
+
+    """
+    def pack(self, *f):
+        fmt = '>BBffffB' + 'b' * (len(f) - 7)
+        return struct.pack(fmt, *f)
+
+    def unpack(self, s):
+        fields = [0x6c] + list(struct.unpack('>BffffB', tobytes(s[1:19])))
+        nsvs = fields[6]
+
+        try:
+            s = tobytes(s[19:])
+            for n in range(0, nsvs):
+                fields.append(struct.unpack('>b', s[n:n+1])[0])
+        except IndexError:
+            # Occasionally `s` doesn't seem to be long enough
+            # so in this case instead of causing an exception we
+            # simply return the data so far.
+            pass
+
+        return fields
 
 class Struct0x6d(object):
     """Report Packet 0x6D: Satellite Selection List.
@@ -212,13 +238,13 @@ class Struct0x6d(object):
         return struct.pack(fmt, *f)
 
     def unpack(self, s):
-        fields = [0x6d] + list(struct.unpack('>Bffff', s[1:18]))
+        fields = [0x6d] + list(struct.unpack('>Bffff', tobytes(s[1:18])))
         nsvs = (fields[0] & 0b11110000) >> 4
 
         try:
             s = s[18:]
             for n in range(0, nsvs):
-                fields.append(struct.unpack('>b', s[n])[0])
+                fields.append(struct.unpack('>b', tobytes(s[n:n+1]))[0])
         except IndexError:
             # Occasionally `s` doesn't seem to be long enough
             # so in this case instead of causing an exception we
@@ -257,7 +283,7 @@ class Struct0xbb(object):
             return struct.pack(self.format, *fields)
 
     def unpack(self, rawpacket):
-        return struct.unpack(self.format, rawpacket)
+        return struct.unpack(self.format, tobytes(rawpacket))
 
 
 
@@ -437,8 +463,12 @@ PACKET_STRUCTURES = {
     0x5b:   [Struct('>BfBBfBf')],
     # Report Packet 0x5C: Satellite Tracking Status
     0x5c:   [Struct('>BBBBBffffBBBB')],
+    # Report Packet 0x5D: Sattelite Tracking Status
+    0x5d:   [Struct('>BBBBBffffBBBBBB')],
     # Report Packet 0x5F-11: EEPROM Segment Status
     0x5f:   [StructRaw()],
+    # Report Packet 0x6D: Satellite Selection List
+    0x6c:   [Struct0x6c()],
     # Report Packet 0x6D: Satellite Selection List
     0x6d:   [Struct0x6d()],
     # Command/Report Packet 0x70: Filter Configuration
