@@ -138,31 +138,31 @@ def pack2dict(packet):
     if packet[0] == 0x5A:
         return {
             "Report": "0x5A",
-            "SV PRN": packet[2],
-            "Sample length": packet[3],
-            "Signal level": packet[4],
-            "Code phase": packet[5],
-            "Doppler": packet[6],
-            "Time of measurement": packet[7]
+            "SV PRN": packet[1],
+            "Sample length": packet[2],
+            "Signal level": packet[3],
+            "Code phase": packet[4],
+            "Doppler": packet[5],
+            "Time of measurement": packet[6]
         }
 
     if packet[0] == 0x5D:
         return {
             "Report": "0x5D",
-            "SV PRN": packet[2],
-            "Channel number": packet[3],
-            "Acquisition flag": packet[4],
-            "SV used in Pos or Time calc": packet[5],
-            "signal level": packet[6],
-            "time of last measurement": packet[7],
-            "elevation angles": packet[8],
-            "azimuth angle": packet[9],
-            "old measurement flag": packet[10],
-            "integer msec flag": packet[11],
-            "bad data flag": packet[12],
-            "data collection flag": packet[13],
-            "Used flags": packet[14],
-            "SV Type": packet[15]
+            "SV PRN": packet[1],
+            "Channel number": packet[2],
+            "Acquisition flag": packet[3],
+            "SV used in Pos or Time calc": packet[4],
+            "signal level": packet[5],
+            "time of last measurement": packet[6],
+            "elevation angles": packet[7],
+            "azimuth angle": packet[8],
+            "old measurement flag": packet[9],
+            "integer msec flag": packet[10],
+            "bad data flag": packet[11],
+            "data collection flag": packet[12],
+            "Used flags": packet[13],
+            "SV Type": packet[14]
         }
 
     if packet[0] == 0x6C:
